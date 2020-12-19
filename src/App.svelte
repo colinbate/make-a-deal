@@ -1,20 +1,73 @@
 <script lang="ts">
 	import ModeSwitcher from './ModeSwitcher.svelte';
 	import Tailwindcss from './Tailwindcss.svelte';
-	export let name: string;
+	import Cases from './Cases.svelte';
+	import Money from './Money.svelte';
+	import Offer from './Offer.svelte';
+	import Round from './Round.svelte';
+	import FinalSwap from './FinalSwap.svelte';
+	import { state, send } from './logic';
+	import { asMoney } from './logic/random';
+
+function pickCase(ev) {
+	send({
+		type: 'SELECT_CASE',
+		id: ev.detail.id,
+	});
+}
+
+function deal() {
+	send({type: 'DEAL'});
+}
+
+function noDeal() {
+	send({type: 'NO_DEAL'});
+}
+
+function swap() {
+	send({type: 'SWAP_CASE'});
+}
+
+function check() {
+	send({type: 'NO_SWAP'});
+}
 </script>
-<style>
-	.custom-style {
-		@apply italic;
-	}
-</style>
 <Tailwindcss />
 <ModeSwitcher />
 <main class="p-4 mx-auto text-center max-w-xl">
-	<h1 class="uppercase text-6xl leading-normal font-thin text-svelte">Hello {name}!</h1>
-	<p class="custom-style">
-		Visit the
-		<a href="https://svelte.dev/tutorial" class="text-blue-500 underline">Svelte tutorial</a>
-		to learn how to build Svelte apps.
+	{#if $state.matches('welcome')}
+	<h1 class="uppercase text-4xl leading-normal font-thin text-svelte">Make A Deal</h1>
+	<p class="py-3">Welcome to Make A Deal. You choose a case that could contain a million dollars.
+		By removing other cases you determine what yours is.
+		Along the way the game will make offers to 'buy you out'.
+		See how much you can win!
 	</p>
+	{/if}
+	{#if $state.matches('playing')}
+		<Money board={$state.context.board}/>
+		{#if $state.matches('playing.chooseCase')}
+		<p>Please choose your case:</p>
+		{/if}
+		{#if $state.context.round}
+		<Round round={$state.context.round} />
+		{/if}
+		<Cases cases={$state.context.cases} on:select={pickCase}/>
+		{#if $state.matches('playing.showCase')}
+		<div class="text-3xl fixed top-1/2 left-0 transform -translate-y-1/2 bg-blue-200 text-black w-full p-4">{asMoney($state.context.removed.contents)}</div>
+		{/if}
+		{#if $state.matches('playing.reviewOffer')}
+		<Offer offer={$state.context.offer} on:deal={deal} on:nodeal={noDeal}/>
+		{/if}
+		{#if $state.matches('playing.finalSwap')}
+		<FinalSwap cases={$state.context.cases} on:swap={swap} on:noswap={check} />
+		{/if}
+		{#if $state.matches('playing.showWinnings')}
+		<div class="text-3xl fixed top-1/2 left-0 transform -translate-y-1/2 bg-blue-200 text-black w-full p-4">
+			<div>You win {asMoney($state.context.winnings)}</div>
+			<button type="button" on:click={() => send({type: 'NEW_GAME'})} class="text-xl rounded px-3 py-2 bg-blue-400">Replay</button>
+		</div>
+		{/if}
+	{:else}
+		<button type="button" on:click={() => send({type: 'NEW_GAME'})} class="rounded px-3 py-2 bg-blue-400">Start</button>
+	{/if}
 </main>
