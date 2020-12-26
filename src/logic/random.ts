@@ -79,9 +79,10 @@ export function calculateOffer(board: Value[]) {
   return (offer > 2500 ? (Math.round(offer / 1000) * 1000) : (offer > 75 ? Math.round(offer / 100) * 100 : offer));
 }
 
-const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'});
+const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0, minimumFractionDigits: 0 });
+const smallfmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 export function asMoney(x: number) {
-  return fmt.format(x);
+  return x < 1 ? smallfmt.format(x) : fmt.format(x);
 }
 
 export function shortId(len = DEFAULT_ID_LENGTH) {

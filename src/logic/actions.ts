@@ -10,6 +10,7 @@ const resetGame = assign<DealContext>({
   round: undefined,
   removed: undefined,
   winnings: undefined,
+  reveal: false,
 });
 
 const chooseCase = assign<DealContext, SelectCaseEvent>({
@@ -76,15 +77,21 @@ const makeOffer = assign<DealContext>({
 });
 
 const takeDeal = assign<DealContext>({
-  winnings: ctx => ctx.offer
+  winnings: ctx => ctx.offer,
+  reveal: true,
 });
 
 const swapCases = assign<DealContext>({
-  winnings: ctx => ctx.cases.find(c => !c.open).contents
+  winnings: ctx => ctx.cases.find(c => !c.open).contents,
+  reveal: true,
 });
 
 const checkCase = assign<DealContext>({
   winnings: ctx => ctx.selectedCase.contents
+});
+
+const updateTotal = assign<DealContext>({
+  grandTotal: ctx => ctx.grandTotal + ctx.winnings
 });
 
 const roundOver = (ctx: DealContext) => ctx.round.remaining === 0;
@@ -101,6 +108,7 @@ export const options: Partial<MachineOptions<DealContext, any>> = {
     takeDeal,
     swapCases,
     checkCase,
+    updateTotal,
   },
   guards: {
     roundOver,

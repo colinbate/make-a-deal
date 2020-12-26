@@ -7,10 +7,12 @@ export const dealMachine = Machine<DealContext, DealStateSchema, DealEvent>({
     board: [],
     cases: [],
     selectedCase: undefined,
+    reveal: false,
     removed: undefined,
     offer: undefined,
     round: undefined,
     winnings: undefined,
+    grandTotal: 0,
   },
   on: {
     SET_NAME: {
@@ -100,6 +102,7 @@ export const dealMachine = Machine<DealContext, DealStateSchema, DealEvent>({
           }
         },
         showWinnings: {
+          entry: ['updateTotal'],
           type: 'final'
         },
       },

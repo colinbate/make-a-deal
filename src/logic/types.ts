@@ -17,10 +17,12 @@ export interface DealContext {
   board: Value[];
   cases: Case[];
   selectedCase: Case | undefined;
+  reveal: boolean;
   removed: Case | undefined;
   offer: number | undefined;
   round: Round | undefined;
   winnings: number | undefined;
+  grandTotal: number;
 }
 
 export type SelectCaseEvent = { type: 'SELECT_CASE'; id: number; };

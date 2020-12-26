@@ -6,6 +6,7 @@
 	import Offer from './Offer.svelte';
 	import Round from './Round.svelte';
 	import FinalSwap from './FinalSwap.svelte';
+	import Banner from './Banner.svelte';
 	import { state, send } from './logic';
 	import { asMoney } from './logic/random';
 
@@ -53,7 +54,7 @@ function check() {
 		{/if}
 		<Cases cases={$state.context.cases} on:select={pickCase}/>
 		{#if $state.matches('playing.showCase')}
-		<div class="text-3xl fixed top-1/2 left-0 transform -translate-y-1/2 bg-blue-200 text-black w-full p-4">{asMoney($state.context.removed.contents)}</div>
+		<Banner>{asMoney($state.context.removed.contents)}</Banner>
 		{/if}
 		{#if $state.matches('playing.reviewOffer')}
 		<Offer offer={$state.context.offer} on:deal={deal} on:nodeal={noDeal}/>
@@ -62,10 +63,12 @@ function check() {
 		<FinalSwap cases={$state.context.cases} on:swap={swap} on:noswap={check} />
 		{/if}
 		{#if $state.matches('playing.showWinnings')}
-		<div class="text-3xl fixed top-1/2 left-0 transform -translate-y-1/2 bg-blue-200 text-black w-full p-4">
+		<Banner>
 			<div>You win {asMoney($state.context.winnings)}</div>
+			{#if $state.context.reveal}<div>Your case ({$state.context.selectedCase.id}) had {asMoney($state.context.selectedCase.contents)}</div>{/if}
+			<div>Grand total {asMoney($state.context.grandTotal)}</div>
 			<button type="button" on:click={() => send({type: 'NEW_GAME'})} class="text-xl rounded px-3 py-2 bg-blue-400">Replay</button>
-		</div>
+		</Banner>
 		{/if}
 	{:else}
 		<button type="button" on:click={() => send({type: 'NEW_GAME'})} class="rounded px-3 py-2 bg-blue-400">Start</button>
