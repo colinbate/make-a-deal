@@ -1,6 +1,30 @@
-import { assign, MachineOptions } from 'xstate';
+import { assign, type MachineOptions } from 'xstate';
+import { createModel } from 'xstate/lib/model';
 import type { DealContext, SelectCaseEvent } from './types';
-import { getNewBoard, getNewCases, calculateOffer } from './random';
+import { getNewBoard, getNewCases, calculateOffer, largestValue, asMoney } from './random';
+
+export const gameModel = createModel({
+  board: [],
+  cases: [],
+  selectedCase: undefined,
+  reveal: false,
+  extraNote: undefined,
+  removed: undefined,
+  offer: undefined,
+  round: undefined,
+  winnings: undefined,
+  grandTotal: 0,
+} as DealContext, {
+  events: {
+    SELECT_CASE: (id: number) => ({ id }),
+    SET_NAME: () => ({}),
+    DEAL: () => ({}),
+    NO_DEAL: () => ({}),
+    SWAP_CASE: () => ({}),
+    NO_SWAP: () => ({}),
+    NEW_GAME: () => ({}),
+  }
+});
 
 const resetGame = assign<DealContext>({
   board: () => getNewBoard(),
@@ -11,6 +35,7 @@ const resetGame = assign<DealContext>({
   removed: undefined,
   winnings: undefined,
   reveal: false,
+  extraNote: undefined,
 });
 
 const chooseCase = assign<DealContext, SelectCaseEvent>({
@@ -79,6 +104,11 @@ const makeOffer = assign<DealContext>({
 const takeDeal = assign<DealContext>({
   winnings: ctx => ctx.offer,
   reveal: true,
+  extraNote: ctx => {
+    const topVal = largestValue();
+    const mil = ctx.cases.find(x => x.show && !x.open && x.contents === topVal);
+    return mil ? `The ${asMoney(topVal)} was in case ${mil.id}` : undefined;
+  }
 });
 
 const swapCases = assign<DealContext>({

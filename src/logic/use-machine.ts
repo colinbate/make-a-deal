@@ -1,5 +1,5 @@
-import { readable } from "svelte/store";
-import { interpret, StateMachine, EventObject, Typestate, InterpreterOptions } from "xstate";
+import { readable } from 'svelte/store';
+import { interpret, type StateMachine, type EventObject, type Typestate, type InterpreterOptions } from 'xstate';
 
 export function useMachine<TContext, TSchema, TEvents extends EventObject, TStates extends Typestate<TContext>>(machine: StateMachine<TContext, TSchema, TEvents, TStates>, opts?: Partial<InterpreterOptions>) {
   const service = interpret(machine, opts);

@@ -72,6 +72,10 @@ export function getNewCases() {
   return cases;
 }
 
+export function largestValue() {
+  return allValues[allValues.length - 1];
+}
+
 export function calculateOffer(board: Value[]) {
   let count = 0;
   const sum = board.reduce((p, c) => p + (!c.seen && (count += 1) ? c.amount : 0), 0);

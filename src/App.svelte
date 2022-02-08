@@ -9,6 +9,7 @@
 	import Banner from './Banner.svelte';
 	import { state, send } from './logic';
 	import { asMoney } from './logic/random';
+import { getContext } from 'svelte';
 
 function pickCase(ev) {
 	send({
@@ -66,6 +67,9 @@ function check() {
 		<Banner>
 			<div>You win {asMoney($state.context.winnings)}</div>
 			{#if $state.context.reveal}<div>Your case ({$state.context.selectedCase.id}) had {asMoney($state.context.selectedCase.contents)}</div>{/if}
+			{#if $state.context.extraNote}
+				<div>{$state.context.extraNote}</div>
+			{/if}
 			<div>Grand total {asMoney($state.context.grandTotal)}</div>
 			<button type="button" on:click={() => send({type: 'NEW_GAME'})} class="text-xl rounded px-3 py-2 bg-blue-400">Replay</button>
 		</Banner>

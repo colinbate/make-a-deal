@@ -42,6 +42,7 @@ export default {
 	},
 	plugins: [
 		replace({
+			preventAssignment: true,
       DEAL_VERSION: pkg.version,
       DEAL_SHA: process.env.COMMIT_REF || 'local',
       'process.env.NODE_ENV': production

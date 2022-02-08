@@ -18,6 +18,7 @@ export interface DealContext {
   cases: Case[];
   selectedCase: Case | undefined;
   reveal: boolean;
+  extraNote: string | undefined;
   removed: Case | undefined;
   offer: number | undefined;
   round: Round | undefined;

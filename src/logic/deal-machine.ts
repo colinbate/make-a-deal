@@ -8,6 +8,7 @@ export const dealMachine = Machine<DealContext, DealStateSchema, DealEvent>({
     cases: [],
     selectedCase: undefined,
     reveal: false,
+    extraNote: undefined,
     removed: undefined,
     offer: undefined,
     round: undefined,
@@ -60,7 +61,7 @@ export const dealMachine = Machine<DealContext, DealStateSchema, DealEvent>({
         },
         showCase: {
           after: {
-            3000: [
+            2000: [
               {
                 actions: ['makeOffer'],
                 target: 'reviewOffer',
